@@ -1,5 +1,6 @@
 package dev.jstec.core.service;
 
+import dev.jstec.demo.domain.model.Costumer;
 import dev.jstec.demo.domain.model.Sku;
 
 import java.util.List;
@@ -10,5 +11,6 @@ public interface BaseService<T> {
     List <T> getAll();
 
     <T> T getById( Long id);
+
 
 }

@@ -1,6 +1,7 @@
 package dev.jstec.demo.resource.controller;
 
 import dev.jstec.demo.domain.model.Costumer;
+import dev.jstec.demo.resource.dto.CostumerDTO;
 import dev.jstec.demo.resource.dto.CostumerListDto;
 import dev.jstec.demo.service.CostumerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,6 +56,24 @@ public class CostumerController {
         return ResponseEntity.ok().body( service.getById( id ) );
     }
 
+    @PostMapping
+    public ResponseEntity<Costumer> create (@RequestBody Costumer costumer){
+        return ResponseEntity.status( HttpStatus.CREATED )
+                .body(service.create(costumer));
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete (@PathVariable Long id){
+        service.delete( id );
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CostumerDTO> update (@PathVariable Long id,  @RequestBody CostumerDTO dto){
+        dto = service.update(id, dto);
+
+        return ResponseEntity.ok().body( dto );
+    }
 
 
 }

@@ -1,15 +1,27 @@
 package dev.jstec.demo.service.impl;
 
+import dev.jstec.demo.domain.CostumerType;
+import dev.jstec.demo.domain.model.Address;
 import dev.jstec.demo.domain.model.Costumer;
+import dev.jstec.demo.domain.model.Seller;
 import dev.jstec.demo.domain.repository.CostumerRepository;
+import dev.jstec.demo.exception.DatabaseIntegrityException;
+import dev.jstec.demo.exception.EntityNotFoundException;
+import dev.jstec.demo.exception.ResourceNotFoundException;
+import dev.jstec.demo.resource.dto.CostumerDTO;
 import dev.jstec.demo.resource.dto.CostumerListDto;
 import dev.jstec.demo.service.CostumerService;
+import org.modelmapper.Converters;
+import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,9 +29,11 @@ import java.util.stream.Collectors;
 @Service
 public class CostumerServiceImpl implements CostumerService {
     private final CostumerRepository repository;
+    private final  ModelMapper modelMapper;
 
-    public CostumerServiceImpl ( CostumerRepository repository ) {
+    public CostumerServiceImpl ( CostumerRepository repository, ModelMapper modelMapper ) {
         this.repository = repository;
+        this.modelMapper =modelMapper;
     }
 
     @Override
@@ -47,6 +61,38 @@ public class CostumerServiceImpl implements CostumerService {
 
                 return result.map( CostumerListDto::new );
     }
+
+    @Override
+    public Costumer create ( Costumer costumer ) {
+        return repository.save( costumer );
+    }
+
+    @Override
+    public void delete ( Long id ) {
+        try {
+            repository.deleteById( id );
+
+        } catch (EmptyResultDataAccessException e) {
+            throw new ResourceNotFoundException( "Cliente não encontrada." );
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseIntegrityException( "Violação de integridade relacional.");
+        }
+
+    }
+
+    @Override
+    public CostumerDTO update ( Long id, CostumerDTO dto ) {
+        try {
+
+            return modelMapper.map( repository.save( costumerMappertoDto( id, dto ) ) , CostumerDTO.class );
+
+        } catch (EntityNotFoundException e) {
+            throw new ResourceNotFoundException( "Cliente não encontrada." );
+        }
+    }
+
+
+
     @Transactional(readOnly = true)
     @Override
     public Costumer getById ( Long id ) {
@@ -83,5 +129,23 @@ public class CostumerServiceImpl implements CostumerService {
     public List <Costumer> getAll () {
 
         return repository.findAll();
+    }
+
+    private Costumer costumerMappertoDto(Long id, CostumerDTO dto){
+        Costumer costumer = repository.getReferenceById( id );
+        costumer.setName( dto.getName() );
+        costumer.setAddress( dto.getAddress() );
+        costumer.setCnpj( dto.getCnpj() );
+        costumer.setTaxIdentity( dto.getTaxIdentity() );
+        costumer.setPhone( dto.getPhone() );
+        costumer.setEmail( dto.getEmail() );
+        costumer.setCostumerType( dto.getCostumerType() );
+        costumer.setAddressNumber( dto.getAddressNumber() );
+        costumer.setComplement( dto.getComplement() );
+        costumer.setRegisterDate( dto.getRegisterDate() );
+        costumer.setSeller( dto.getSeller() );
+        costumer.setLatitud( dto.getLatitud() );
+        costumer.setLongitud( dto.getLongitud() );
+        return costumer;
     }
 }
