@@ -4,8 +4,6 @@ import dev.jstec.demo.domain.model.Costumer;
 import dev.jstec.demo.resource.dto.CostumerDTO;
 import dev.jstec.demo.resource.dto.CostumerListDto;
 import dev.jstec.demo.service.CostumerService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -21,10 +19,14 @@ import java.util.stream.Stream;
 @RestController
 @RequestMapping("/api/costumer")
 public class CostumerController {
-    @Autowired
-    private CostumerService service;
+    private final CostumerService service;
+
+    public CostumerController ( CostumerService service ) {
+        this.service = service;
+    }
+
     @GetMapping("/all")
-    @Cacheable
+
     public ResponseEntity<List<CostumerListDto>> getAll(){
 
         List<CostumerListDto> result = service.getAlltoList();
