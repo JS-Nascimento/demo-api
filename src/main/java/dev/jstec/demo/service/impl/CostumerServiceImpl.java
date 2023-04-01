@@ -61,25 +61,26 @@ public class CostumerServiceImpl implements CostumerService {
 
                 return result.map( CostumerListDto::new );
     }
-
+    @Transactional
     @Override
     public Costumer create ( Costumer costumer ) {
         return repository.save( costumer );
     }
-
+    @Transactional
     @Override
     public void delete ( Long id ) {
         try {
             repository.deleteById( id );
 
         } catch (EmptyResultDataAccessException e) {
+
             throw new ResourceNotFoundException( "Cliente não encontrada." );
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseIntegrityException( "Violação de integridade relacional.");
         }
 
     }
-
+    @Transactional
     @Override
     public CostumerDTO update ( Long id, CostumerDTO dto ) {
         try {

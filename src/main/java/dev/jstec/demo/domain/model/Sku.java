@@ -1,5 +1,6 @@
 package dev.jstec.demo.domain.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,6 +13,7 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class Sku {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
