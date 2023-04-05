@@ -10,7 +10,7 @@
     </parent>
     <groupId>dev.jstec</groupId>
     <artifactId>demo</artifactId>
-    <version>1.1</version>
+    <version>1.0</version>
     <name>demo-api</name>
     <description>demo-api</description>
     <properties>
@@ -68,6 +68,11 @@
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-s3</artifactId>
             <version>1.12.429</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.11.0</version>
         </dependency>
     </dependencies>
 
